@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
@@ -20,8 +22,11 @@ int main(){
 	char		cadena[100];
 
 	sprintf(cadena, "\n%s[%d] ********** Iniciant PROCES des de %d **********%s\n",color_blue, getpid(), getppid(), color_end);
-	if((write(1,cadena,strlen(cadena)))==-1)
-		perror("ERROR: write 1");
+	switch(write(1,cadena,strlen(cadena))){
+		case -1:
+			perror("ERROR: write 1");
+		break;
+	}
 
   switch(pid = fork()){
 	case -1: 
@@ -55,10 +60,12 @@ int main(){
 		sprintf(cadena,"%s[%d]   PROCES   PARE   suspen   execucio   en   espera   de   la finalitzacio del fill %d ... %s\n", color_blue,getpid(),pid,color_end);	
 		write(1,cadena,strlen(cadena));
 
-		if((fpid=wait(&estat)) == -1){
-			sprintf(cadena,"%s[%d] PROCES PARE no te fills ... %s\n", color_blue,getpid(),color_end);
-			write(1, cadena,strlen(cadena));
-			exit(0);			
+		switch(fpid=wait(&estat)){
+			case -1:
+				sprintf(cadena,"%s[%d] PROCES PARE no te fills ... %s\n", color_blue,getpid(),color_end);
+				write(1, cadena,strlen(cadena));
+				exit(0);
+			break;			
 		}
   	break;
   }
