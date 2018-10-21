@@ -51,7 +51,7 @@ int main(){
 			exit(exitcode);	
   	break;
       
-	default: pid>0;
+	default: 
 		sprintf(cadena,"%s[%d]   PROCES   PARE   suspen   execucio   en   espera   de   la finalitzacio del fill %d ... %s\n", color_blue,getpid(),pid,color_end);	
 		write(1,cadena,strlen(cadena));
 
