@@ -67,5 +67,5 @@ int main(){
 		write(1,cadena,strlen(cadena));
 		exit(0);
 
-	}
+	
 }
