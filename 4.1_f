@@ -19,8 +19,7 @@ int main(){
 	pid_t		pid,fpid;
 	char		cadena[100];
 
-	sprintf(cadena, "\n%s[%d] ********** Iniciant PROCES des de %d 
-	**********%s\n",color_blue, getpid(), getppid(), color_end);
+	sprintf(cadena, "\n%s[%d] ********** Iniciant PROCES des de %d **********%s\n",color_blue, getpid(), getppid(), color_end);
 	if((write(1,cadena,strlen(cadena)))==-1)
 		perror("ERROR: write 1");
 
