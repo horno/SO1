@@ -24,13 +24,13 @@ int main(){
 		perror("ERROR: write 1");
 
   switch(pid = fork()){
-	case 1: pid == -1
+	case 1: pid == -1;
 		sprintf(cadena,"%s[%d] Error en l'execució del fork.%s\n",color_blue,getpid(),color_end);
 		write(2,s,strlen(s));
 		exit(0);
   	break;
     
-	case 2: pid == 0
+	case 2: pid == 0;
 
 		sprintf(cadena,"\t%s[%d] ***** Iniciant proces fill de %d ... ***** %s\n",color_red,getpid(),getppid(),color_end);
 		write(1,cadena,strlen(cadena));
@@ -51,7 +51,7 @@ int main(){
 			exit(exitcode);	
   	break;
       
-	default: pid>0
+	default: pid>0;
 		sprintf(cadena,"%s[%d]   PROCES   PARE   suspen   execucio   en   espera   de   la finalitzacio del fill %d ... %s\n", color_blue,getpid(),pid,color_end);	
 		write(1,cadena,strlen(cadena));
 
