@@ -1,50 +1,38 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
-#include <signal.h>
+#include <sys/types.h>
 #include <sys/wait.h>
+#include <signal.h>
 
-
-
-// Capçalera gestors de senyals
-//void gestor_sigquit(int sig);
 void gestor_sigint(int sig);
 
-int main(/*int argc, char *argv[]*/){
+int main(){
 
-	//Inicialitzar senyals amb pertinent control d'errors
-	/*if(signal(SIGQUIT,gestor_sigquit) == SIG_ERR){
-		perror("Signal SIGQUIT");
-		exit(-1);
-	}*/
 	if(signal(SIGINT,gestor_sigint)==SIG_ERR){
 		perror("Signal SIGINT");
 		exit(-1);
-	}	
-	//Creació de canonades
-
-	//Bucle principal del programa, espera a la senyal SIQUIT o SIGINT, depenent de la que rebi seguirà la seva execució o executarà el handler
-	while(1){
-		pause();	
-		printf("I made it here");
 	}
+
+
+	while(1){
+		pause();
+		printf("I made it here\n");
+	}
+	/*while(1){
+		pause();		
+		printf("I made it here");
+	}*/
+	
+
 
 
 }
-/*void gestor_sigquit(int sig){
-	//Reprogramar rutina de tractament
-	if(signal(SIGQUIT,gestor_sigquit) == SIG_ERR){
-		perror("Signal SIGQUIT");
-		exit(-1);
-	}
-	
-}*/
+
+
 void gestor_sigint(int sig){
-	// ---------------------> Més endavant es programarà l'acavament del programa
-	printf("Gestor SIGINT activat"); //-----------------> DEBUGGING
-	//Reprogramar rutina de tractament
-	/*if(signal(SIGINT,gestor_sigint) == SIG_ERR){
-		perror("Signal SIGINT");
-		exit(-1);
-	} */
+
+	printf("Gestor SIGINT activat");
+
 }
