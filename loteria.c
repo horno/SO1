@@ -10,11 +10,12 @@
 // Capçalera gestors de senyals
 void gestor_sigquit(int sig);
 void gestor_sigint(int sig);
-char s[100];
 int pid[5];
 int i;
 
 int main(int argc, char *argv[]){
+	char s[100];
+	int results[5];
 	//Control de llavor nula
 	if(argv[1] == NULL){
 		perror("No s'ha passat cap paràmetre.");
@@ -79,17 +80,32 @@ int main(int argc, char *argv[]){
 	
 	}
 	
-	//Bucle principal del programa, espera a la senyal SIQUIT o SIGINT, depenent de la que rebi seguirà la seva execució o executarà el handler
+	/*Bucle principal del programa, espera a la senyal SIQUIT o SIGINT, 
+	  depenent de la que rebi seguirà la seva execució o executarà el handler*/
+	int random;
 	while(1){
 		pause();
-		
-		//-------------> DEBUGGING
+		for(i=0;i<5;i++){
+			//sprintf(s,"%i",rand());
+			random = rand();
+			write(pipefdW[i][1],&random,strlen(s));			
+		}
+		for(i=0;i<5;i++){
+			read(pipefdR[i][1],&);
+			
+		}
+		/*-------------> DEBUGGING
 		printf("CTRL + 4\n");
 		
 		sprintf(s,"Ha arribat!\n");
 		
 		write(pipefdW[0][1],s,strlen(s));
-		perror("hello");
+		write(pipefdW[1][1],s,strlen(s));
+		write(pipefdW[2][1],s,strlen(s));
+		write(pipefdW[3][1],s,strlen(s));
+		write(pipefdW[5][1],s,strlen(s));
+		
+		perror("hello");*/
 	}
 	
 
@@ -105,6 +121,7 @@ void gestor_sigquit(int sig){
 	
 }
 void gestor_sigint(int sig){
+	char buff[100];
 	for(i=0;i<5;i++){
 		if(kill(pid[i],SIGTERM) == -1){
 			perror("Error enviament SIGQUIT");
@@ -112,8 +129,8 @@ void gestor_sigint(int sig){
 		}
 		wait(NULL);
 	}
-	sprintf(s,"Tots els meus fills han acabat\n");
-	write(1,s,strlen(s));
+	sprintf(buff,"Tots els meus fills han acabat\n");
+	write(1,buff,strlen(buff));
 	exit(0);
 	//Reprogramar rutina de tractament
 	if(signal(SIGINT,gestor_sigint) == SIG_ERR){
@@ -121,26 +138,6 @@ void gestor_sigint(int sig){
 		exit(-1);
 	} 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
