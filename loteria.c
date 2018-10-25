@@ -39,17 +39,19 @@ int main(int argc, char *argv[]){
 	//Creació de fills amb gestió canonades
 	
 	for(i = 0;i<5;i++){
-		pid[i] = fork();
 		//creació de canonades 
-		/*if(pipe(pipefdW[1]) == -1){
+		if(pipe(pipefdW[i]) == -1){
 			perror("Error creación pipe escritura padre");
 			exit(-1);
 		}
-		if(pipe(pipefdR[1]) == -1){
+		if(pipe(pipefdR[i]) == -1){
 			perror("Error creación pipe lectura padre");
 			exit(-1);
-		}*/
+		}
+		
 		//creació de fills
+		pid[i] = fork();
+		int k;
 		if(pid[i] == -1){
 			perror("Fork failed");
 			exit(1);
@@ -60,28 +62,34 @@ int main(int argc, char *argv[]){
 			close(1);
 			dup(pipefdR[i][1]);
 			close(pipefdW[i][0]);
-			close(pipefdW[i][1]);
-			close(pipefdR[i][0]);
 			close(pipefdR[i][1]);
+			for(k = 0;k<=i;k++){
+				close(pipefdR[k][0]);
+				close(pipefdW[k][1]);
+			}
 			execlp("./fill","fill",NULL);
 			perror("Error recobriment");
 			exit(-1);
 		}else{
 			close(pipefdW[i][0]);
-			close(pipefdR[i][1]);
-			dup(pipefdW[i][1]);
 			dup(pipefdR[i][0]);
-			close(pipefdW[i][1]);
 			close(pipefdR[i][0]);
+			close(pipefdR[i][1]);
 		}
 	
 	}
-
+	
 	//Bucle principal del programa, espera a la senyal SIQUIT o SIGINT, depenent de la que rebi seguirà la seva execució o executarà el handler
 	while(1){
 		pause();
+		
 		//-------------> DEBUGGING
-		printf("Has apretat CTRL + 4\n");
+		printf("CTRL + 4\n");
+		
+		sprintf(s,"Ha arribat!\n");
+		
+		write(pipefdW[0][1],s,strlen(s));
+		perror("hello");
 	}
 	
 
