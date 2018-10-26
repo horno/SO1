@@ -28,12 +28,10 @@ int main(){
 	}
 	
 	while(1){
-		read(0,(void *)&seed,sizeof(int));
+		read(0,(void *)&seed,sizeof(seed));
 		srand(seed);
 		random = rand()%10;
-		/*sprintf(s,"%d\n",random);
-		write(2,s,strlen(s));*/
-		write(1,(void *)&random,sizeof(int));
+		write(1,(void *)&random,sizeof(random));
 	}
 	
 
@@ -61,7 +59,12 @@ void gestor_sigterm(int sig){
 
 }*/
 
-
+/*read(0,(void *)&seed,sizeof(int));
+		srand(seed);
+		random = rand()%10;
+		sprintf(s,"%d\n",random);
+		write(2,s,strlen(s));
+		write(1,(void *)&random,sizeof(int));*/
 
 
 
