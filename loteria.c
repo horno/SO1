@@ -1,175 +1,109 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <signal.h>
-#include <sys/wait.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <signal.h>
 
-
-
-/* Signal manager headers */
-void gestor_sigquit(int sig);
 void gestor_sigint(int sig);
-void gestor_sigpipe(int sig);
-/* Declaration of global variables */
-int pid[5];	/* Child PID storage */
-int fdR[5][2]; /* Father reading pipes, writing child pipes */
-int fdW[5][2]; /* Father writing pipes, reading child pipes */	
+void gestor_sigquit(int sig);
 
-/* Main function */
-int main(int argc, char *argv[]){
+int main(int llavor){
 
-	char s[100];	/* Writing buffer */
-	int result;
-	int i;	/* Iterator variable */
-
-	/* NULL seed control */
-	if(argv[1] == NULL){
-		perror("No s'ha passat cap paràmetre.");
-		exit(-1);
-	}
-	int seed = atoi(argv[1]);
-	srand(seed);
-
-	/* Initialization of signal manager */
-	if(signal(SIGQUIT,gestor_sigquit) == SIG_ERR){
-		perror("Signal SIGQUIT");
-		exit(-1);
-	}
+	int pids[5];
+	int sdpare[5][2];
+	int sdfill[5][2];
+	srand(llavor);
+	int returned[5];
+	int ran;
+	
 	if(signal(SIGINT,gestor_sigint)==SIG_ERR){
 		perror("Signal SIGINT");
 		exit(-1);
-	}	
-	if(signal(SIGPIPE,gestor_sigpipe) == SIG_ERR){
-		perror("Signal SIGPIPE");
-		exit(-1);
-	}	
-
-	/*Pipe creation*/
-	for(i = 0;i<5;i++){
-		if(pipe(fdR[i]) == -1){
-			perror("Error creación pipe ");
-			exit(-1);		
-		}
-		if(pipe(fdW[i]) == -1){
-			perror("Error creación pipe");
-			exit(-1);		
-		}
-	}
-	/*Child creation, child pipe management and exec*/
-	for(i = 0; i<5;i++){
-		pid[i] = fork();
-		if(pid[i] == -1){
-			perror("Fork failed");
-			exit(1);
-		}else if(pid[i] == 0){
-			close(0);	    /* Assign child stdin and stdout */
-			dup(fdW[i][0]);	    /* to the pertinent pipes */
-			close(1);
-			dup(fdR[i][1]);
-			int k;
-			for(k=0;k<5;k++){
-				close(fdW[k][0]);
-				close(fdW[k][1]);  /* Close child unused pipes */
-				close(fdR[k][0]);
-				close(fdR[k][1]);
-			}
-			execlp("./fill","fill",NULL);
-			perror("Error recobriment");
-			exit(-1);
-		}
-	}
-	/* Close father unused pipes */
-	for(i=0;i<5;i++){
-		close(fdW[i][0]);
-		close(fdR[i][1]);
 	}
 	
-	/* Main loop, waits to SIGQUIT or SIGINT signal, SIGQUIT will keep the loop 
-	   going, SIGINT will end the program */
-	int random;
-	int num=0;
-	while(1){
-		pause();
-		result = 0;	/* Puts result and num back to 0  */
-		num = 0;	/* to avoid result overlaping     */
-		for(i=0;i<5;i++){
-			random = rand();
-			write(fdW[i][1],(const void*)&random,sizeof(random));	
-		}
-		for(i=0;i<5;i++){
-			read(fdR[i][0],(void*)&num,sizeof(num));
-			result = result*10 + num;
-			
-		}
-		sprintf(s,"Taula> Número premiat: %d\n",result);
-		write(1,s,strlen(s));
-	}
-		
-	//Being here is an error
-	perror("Unreachable position: before while");
-	exit(-1);
-
-
-}
-void gestor_sigquit(int sig){
-	char buff[100];
-	sprintf(buff,"(S'ha pitjat CTRL+4)\n");
-	write(1,buff,strlen(buff));
-	//Reprogramar rutina de tractament
-	if(signal(SIGQUIT,gestor_sigquit) == SIG_ERR){
+	if(signal(SIGQUIT,gestor_sigquit)==SIG_ERR){
 		perror("Signal SIGQUIT");
 		exit(-1);
 	}
 	
-}
-void gestor_sigint(int sig){
-	char buff[100];
-	sprintf(buff,"(S'ha pitjat CTRL+C)\n");
-	write(1,buff,strlen(buff));
-	int i; 	/*Iterator variable*/
-	
+	for(int i=0; i<5; i++){
 
-	for(i=0;i<5;i++){
-		if(kill(pid[i],SIGTERM) == -1){
-			perror("Error enviament SIGTERM");
+		//Creem pipe pare-fill i fem tractament d'errors
+		if (pipe(sdpare[i])==-1){
+			perror("Error en la creació del pipe direcció pare-fill");
 			exit(-1);
 		}
-		wait(NULL);
+		//Creem pipe pare-fill i fem tractament d'errors
+		if(pipe(sdfill[i])==-1){
+			perror("Error en la creació del pipe direcció fill-pare");
+			exit(-1);
+		}
+		//Creem al primer fill		
+		pids[i]=fork();
+		//Fem tractament de pipes dels fills i realitzem el recubriment als fills.
+		if(pids[i]==0){
+			//Pipe llegir del pare
+			close(0);
+			dup(sdpare[i][0]);
+			close(sdpare[i][0]);
+			close(sdpare[i][1]);
+			//Pipe retornar resultat al pare
+			close(1);
+			dup(sdfill[i][1]);
+			close(sdfill[i][1]);
+			close(sdfill[i][0]);
+			execlp("./fill","fill",NULL);
+		}else if(pids[i]>0){
+			//Tanquem els descriptors que no farà servir el pare
+			close(sdpare[i][0]);
+			close(sdfill[i][1]);
+			close(0);
+		}
 	}
-	//Close pipes
-	for(i=0;i<5;i++){
-		close(fdW[i][0]);
-		close(fdW[i][1]);
-		close(fdR[i][0]);
-		close(fdR[i][1]);	
 
+	
+	while(1){
+		pause();
+		//Enviem la llabor al procés fill
+		for(int i=0;i<5;i++){
+			ran=rand();
+			write(sdpare[i][1], &ran, sizeof(ran));
+		}
+		
+		//Esperem i llegim el valor random que ens torna el fill
+		for(int i=0;i<5;i++){
+			read(sdfill[i][0], &returned[i], sizeof(ran));
+		}
+		
+		//Printem el valor que ens torna el fill
+		for(int i=0; i<5;i++){
+			write(1, &returned[i], sizeof(returned[i]));
+		}					
+		
 	}
-	sprintf(buff,"Tots els meus fills han acabat\n");
-	write(1,buff,strlen(buff));
-	exit(0);
-	//Reprogramar rutina de tractament
-	if(signal(SIGINT,gestor_sigint) == SIG_ERR){
+	
+
+}
+
+
+void gestor_sigint(int sig){
+
+	printf("Gestor SIGINT activat");
+	if(signal(SIGINT,gestor_sigint)==SIG_ERR){
 		perror("Signal SIGINT");
 		exit(-1);
-	} 
+	}
+	exit(0);
 }
-void gestor_sigpipe(int sig){
-	perror("S'ha escrit en una tuberia tancada.");
-	exit(-1);
-	/*Reschedule managment routine*/
-	if(signal(SIGPIPE,gestor_sigpipe) == SIG_ERR){
-		perror("Signal SIGPIPE");
+
+void gestor_sigquit(int sig){
+
+	printf("Gestor SIGQUIT activat");
+	if(signal(SIGQUIT,gestor_sigquit)==SIG_ERR){
+		perror("Signal SIGQUIT");
 		exit(-1);
 	}
 
 }
-
-
-
-
-
-
-
-
-
