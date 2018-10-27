@@ -1,3 +1,11 @@
+/*-----------------------------------------------
+PRA1 : [TODO]
+Codi font : loteria.c
+
+Joaquim Picó Mora
+Ian Palacín Aliana
+-----------------------------------------------*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -28,7 +36,8 @@ int main(int argc, char *argv[]){
 		perror("No seed has been passed");
 		exit(-1);
 	}
-	int seed = atoi(argv[1]);
+	int seed;
+	sscanf(argv[1],"%d",&seed);
 	srand(seed);
 
 	/* Initialization of signal managers */

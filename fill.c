@@ -1,3 +1,12 @@
+/*-----------------------------------------------
+PRA1 : [TODO]
+Codi font : fill.c
+
+Joaquim Picó Mora
+Ian Palacín Aliana
+-----------------------------------------------*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
