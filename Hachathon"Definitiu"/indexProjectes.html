@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+<!--Taula home-->
+{% block table %}
+          {% for item in items %}
+            <tr>
+               <td>{{item.titol}}</td>
+               <td>{{item.tags}}</td>
+               <td>{{item.titulacio}}</td>
+               <td>{{item.creador}}</td>
+               <td>{{item.rol}}</td>
+               <td>{{item.estat}}</td>
+            </tr>
+          {% endfor %}
+{% endblock %}
+<!--Modal Eliminar-->
+{% block delete %}
+          {% for item in items %}
+          <tr>
+            <td>
+              <input type="checkbox"value="{{ item.id }}">
+            <td>
+            <td>{{ item.titol }}<td>
+          <tr>
+          {% endfor %}
+{% endblock %}
+<!--Modal Afegir Tags-->
+{% block addTag %}
+      {% for item in items %}
+        <label>{{ item.tag }};</label>
+      {% endfor %}
+{% endblock %}
+<!--Notificacions-->
+{% block notification %}
+      {% for item in items %}
+        <label>Notificació: {{ item.title }} ha passat a l'estat {{ item.estat }}.</label>
+      {% endfor %}
+{% endblock %}
+<!--Modal Editar-->
+{% block edit %}
+<div class="modal-body col-xs-12" style="padding:10px;">
+  <div class="col-xs-6" style="padding:10px;">
+    <input type="text" placeholder="Afegeix el titol del projecte" class="col-xs-12">{{ item.titol }}</input>
+  </div>
+  <div class="col-xs-6" style="padding:10px;">
+    <input type="text" class="col-xs-10" placeholder="Afegir paraula clau">{{ item.tag }}</input>
+    <button  class="col-xs-2">+</button>
+  </div>
+  <div class="col-xs-6" style="padding:10px;">
+    <textarea type="text" placeholder="Descripció" class="col-xs-12">{{ item.descripcio }}</textarea>
+  </div>
+  <div class="col-xs-6" style="padding:10px;">
+    <textarea type="text" placeholder="Objectius" class="col-xs-12">{{ item.objectius }}</textarea>
+  </div>
+  <div class="col-xs-6" style="padding:10px;">
+    <input type="file" class="col-xs-12"> {{item.file }}</input>
+  </div>
+  <div class="col-xs-12" style="border:solid 1px;">
+    <label>{{ item.tag }};</label>
+  </div>
+</div>
+{% endblock %}

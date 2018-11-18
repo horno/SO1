@@ -1,0 +1,72 @@
+html,
+body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+#header {
+   background: #b2dfdb;
+   padding:20px;
+}
+#body {
+  padding-bottom:60px;   /* Height of the footer */
+  background:#fafafa;
+  height:80%;
+}
+#footer {
+   width:100%;
+   background: #b2dfdb;
+   padding:5px;
+}
+.btn-r {
+  padding:10px;
+  font-size:20px;
+}
+
+#booty {
+  height:100%;
+}
+
+#hplk{
+  font-size:40px;
+}
+#padding {
+  padding:4px 0px
+}
+#search{
+  padding:0px;
+}
+
+.btn-padding{
+  padding:10px;
+}
+
+#padding-search{
+  padding:2px;
+}
+
+.padding-0 {
+  padding:0px;
+}
+
+.padding-20 {
+  padding:20px;
+}
+
+#table-style{
+  font-size:20px;
+}
+
+#modal-padding {
+  padding: 5px;
+}
+
+#addButton {
+  padding:0px;
+}
+
+.modalStyle {
+  font-size:20px;
+  font-weight: bold;
+  background:#b2dfdb;
+}

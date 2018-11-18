@@ -1,0 +1,36 @@
+{% extends "totsProjectes.html" %}
+{% block taula %}
+          {% for item in items %}
+            <tr data-toggle="modal" data-target="#info">
+               <td>{{item.titol}}</td>
+               <td>{{item.tags}}</td>
+               <td>{{item.titulacio}}</td>
+               <td>{{item.creador}}</td>
+               <td>{{item.rol}}</td>
+               <td>{{item.estat}}</td>
+               <td><button class="btn btn-success">Solicitar</button></td>
+            </tr>
+          {% endfor %}
+{% endblock %}
+
+{% block info %}
+<div class="modal-body col-xs-12" style="padding:10px;">
+  <div class="col-xs-6" style="padding:10px;">
+    <input type="text" placeholder="Afegeix el titol del projecte" readonly class="col-xs-12">{{ items.titol }}</input>
+  </div>
+  <div class="col-xs-6" style="padding:10px;">
+    <textarea type="text" placeholder="Descripció" readonly class="col-xs-12">{{ items.descripcio }}</textarea>
+  </div>
+  <div class="col-xs-6" style="padding:10px;">
+    <textarea type="text" placeholder="Objectius" readonly class="col-xs-12"> {{ items.objectius }}</textarea>
+  </div>
+  <div class="col-xs-6" style="padding:10px;">
+    <input type="file" readonly class="col-xs-12">{{ items.file }}</input>
+  </div>
+  <div class="col-xs-6" style="padding:10px;">
+    <input type="file" readonly class="col-xs-12">{{ items.estat }}</input>
+  </div>
+  <div class="col-xs-12" style="border:solid 1px;">
+    <label>{{ items.tag }}</label>
+  </div>
+  {% endblock %}
