@@ -1,2 +1,2 @@
 # SO1
-Pràctica 1 SO heckin LOL
+Pràctica 1 SO
